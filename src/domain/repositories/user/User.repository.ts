@@ -1,6 +1,6 @@
 import { PrismaClient, User as PrismaUser, Role } from "@prisma/client";
-import { IUserRepository } from "../../infrastructure/repositories/IUserRepository.interface";
-import { User } from "../entities/User.entity";
+import { IUserRepository } from "../../../infrastructure/repositories/user/IUserRepository.interface";
+import { User } from "../../entities/user/User.entity";
 
 const prisma = new PrismaClient();
 
@@ -59,6 +59,16 @@ export class UserRepository implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
     const user = await prisma.user.findUnique({
       where: { email },
+    });
+
+    return user ? this.toDomainEntity(user) : null;
+  }
+
+  async findByUsernameOrEmail(usernameOrEmail: string): Promise<User | null> {
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+      },
     });
 
     return user ? this.toDomainEntity(user) : null;

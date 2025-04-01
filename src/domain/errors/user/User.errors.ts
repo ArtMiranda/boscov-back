@@ -1,4 +1,4 @@
-import { AppError } from "./App.error";
+import { AppError } from "../App.error";
 
 export class UserAlreadyExistsError extends AppError {
   constructor() {
@@ -21,5 +21,11 @@ export class UserNotFoundError extends AppError {
 export class UserAlreadyDeactivatedError extends AppError {
   constructor() {
     super("User already deactivated", 400);
+  }
+}
+
+export class UserNotActiveError extends AppError {
+  constructor() {
+    super("User is not active", 403);
   }
 }

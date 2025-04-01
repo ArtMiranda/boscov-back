@@ -1,6 +1,7 @@
 import express from "express";
 import errorHandler from "./infrastructure/http/Error.middleware";
-import userRoutes from "./presentation/routes/User.routes";
+import authRoutes from "./presentation/routes/auth/Auth.routes";
+import userRoutes from "./presentation/routes/user/User.routes";
 const cors = require("cors");
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(cors(
 ));
 
 app.use("/user", userRoutes);
+app.use("/auth", authRoutes);
 
 app.use(errorHandler);
 

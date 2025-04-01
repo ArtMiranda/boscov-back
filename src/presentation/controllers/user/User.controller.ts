@@ -1,30 +1,25 @@
 import { hash } from "bcrypt";
 import { validate } from "class-validator";
 import { NextFunction, Request, Response } from "express";
-import { CreateUserDTO } from "../../application/dtos/CreateUser.dto";
-import { UserResponseDTO } from "../../application/dtos/UserResponse.dto";
-import { CreateUserUseCase } from "../../application/useCases/CreateUser.usecase";
-import { DeactivateUserByUsernameUsecase } from "../../application/useCases/DeactivateUserByUsername.usecase";
-import { GetUserByUsernameUsecase } from "../../application/useCases/GetUserByUsername.usecase";
+import { CreateUserDTO } from "../../../application/dtos/user/CreateUser.dto";
+import { UserResponseDTO } from "../../../application/dtos/user/UserResponse.dto";
+import { CreateUserUseCase } from "../../../application/useCases/user/CreateUser.usecase";
+import { DeactivateUserByUsernameUsecase } from "../../../application/useCases/user/DeactivateUserByUsername.usecase";
+import { GetUserByUsernameOrEmailUseCase } from "../../../application/useCases/user/GetUserByUsernameOrEmail";
 
 export class UserController {
   private constructor(
     private readonly createUserUseCase: CreateUserUseCase,
-    private readonly getUserByUsernameUsecase: GetUserByUsernameUsecase,
+    private readonly getUserByUsernameOrEmailUseCase: GetUserByUsernameOrEmailUseCase,
     private readonly deactivateUserByUsernameUsecase: DeactivateUserByUsernameUsecase
   ) {}
 
-  private static instance: UserController;
-
-  public static getInstance(): UserController {
-    if (!UserController.instance) {
-      UserController.instance = new UserController(
-        CreateUserUseCase.getInstance(),
-        GetUserByUsernameUsecase.getInstance(),
-        DeactivateUserByUsernameUsecase.getInstance()
-      );
-    }
-    return UserController.instance;
+  public static makeController(): UserController {
+    return new UserController(
+      CreateUserUseCase.makeUseCase(),
+      GetUserByUsernameOrEmailUseCase.makeUseCase(),
+      DeactivateUserByUsernameUsecase.makeUseCase()
+    );
   }
 
   async create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -47,6 +42,7 @@ export class UserController {
         res.status(400).json({
           status: "error",
           message: "Validation failed",
+          clientMessage: "Erro de validação",
           errors: errors.map((e) => e.constraints),
         });
         return;
@@ -79,14 +75,20 @@ export class UserController {
       const username = req.params.username;
 
       if (!username) {
-        res.status(400).json({ message: "Username is required" });
+        res.status(400).json({
+          message: "Username is required",
+          clientMessage: "Nome de usuário é obrigatório",
+        });
         return;
       }
 
-      const user = await this.getUserByUsernameUsecase.execute(username);
+      const user = await this.getUserByUsernameOrEmailUseCase.execute(username);
 
       if (!user) {
-        res.status(404).json({ message: "User not found" });
+        res.status(404).json({
+          message: "User not found",
+          clientMessage: "Usuário não encontrado",
+        });
         return;
       }
 
@@ -115,7 +117,10 @@ export class UserController {
       const username = req.params.username;
 
       if (!username) {
-        res.status(400).json({ message: "Username is required" });
+        res.status(400).json({
+          message: "Username is required",
+          clientMessage: "Nome de usuário é obrigatório",
+        });
         return;
       }
 

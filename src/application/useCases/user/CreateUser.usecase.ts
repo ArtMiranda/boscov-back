@@ -1,19 +1,14 @@
-import { User } from "../../domain/entities/User.entity";
-import { UserAlreadyExistsError } from "../../domain/errors/User.errors";
-import { UserRepository } from "../../domain/repositories/User.repository";
-import { IUserRepository } from "../../infrastructure/repositories/IUserRepository.interface";
-import { CreateUserDTO } from "../dtos/CreateUser.dto";
+import { User } from "../../../domain/entities/user/User.entity";
+import { UserAlreadyExistsError } from "../../../domain/errors/user/User.errors";
+import { UserRepository } from "../../../domain/repositories/user/User.repository";
+import { IUserRepository } from "../../../infrastructure/repositories/user/IUserRepository.interface";
+import { CreateUserDTO } from "../../dtos/user/CreateUser.dto";
 
 export class CreateUserUseCase {
   private constructor(private readonly userRepository: IUserRepository) {}
 
-  private static instance: CreateUserUseCase;
-
-  static getInstance(): CreateUserUseCase {
-    if (!this.instance) {
-      this.instance = new CreateUserUseCase(UserRepository.getInstance());
-    }
-    return this.instance;
+  static makeUseCase(): CreateUserUseCase {
+    return new CreateUserUseCase(UserRepository.getInstance());
   }
 
   async execute(dto: CreateUserDTO): Promise<User> {
@@ -22,9 +17,8 @@ export class CreateUserUseCase {
     if (userExistsByEmail) {
       throw new UserAlreadyExistsError();
     }
-    const userExistsByUsername = await this.userRepository.findByUsername(
-      dto.username
-    );
+    const userExistsByUsername =
+      await this.userRepository.findByUsernameOrEmail(dto.username);
 
     if (userExistsByUsername) {
       throw new UserAlreadyExistsError();
