@@ -1,8 +1,8 @@
 import { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
-import { InvalidCredentialsError } from "../../../domain/errors/auth/Auth.errors";
-import { UserNotActiveError } from "../../../domain/errors/user/User.errors";
-import { GetUserByUsernameOrEmailUseCase } from "../user/GetUserByUsernameOrEmail";
+import { InvalidCredentialsError } from "../../../domain/errors/auth/auth.errors";
+import { UserNotActiveError } from "../../../domain/errors/user/user.errors";
+import { GetUserByUsernameOrEmailUseCase } from "../user/get-user-by-username-or-email";
 
 export class LoginUseCase {
   private constructor(

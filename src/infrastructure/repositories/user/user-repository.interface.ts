@@ -1,4 +1,4 @@
-import { User } from "../../../domain/entities/user/User.entity";
+import { User } from "../../../domain/entities/user/user.entity";
 
 export interface IUserRepository {
   create(user: User): Promise<User>;
@@ -6,4 +6,5 @@ export interface IUserRepository {
   findByUsernameOrEmail(usernameOrEmail: string): Promise<User | null>;
   findByUsername(username: string): Promise<User | null>;
   deactivateUserByUsername(username: string): Promise<void>;
+  update(user: User): Promise<User>;
 }

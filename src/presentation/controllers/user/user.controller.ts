@@ -1,11 +1,11 @@
 import { hash } from "bcrypt";
 import { validate } from "class-validator";
 import { NextFunction, Request, Response } from "express";
-import { CreateUserDTO } from "../../../application/dtos/user/CreateUser.dto";
-import { UserResponseDTO } from "../../../application/dtos/user/UserResponse.dto";
-import { CreateUserUseCase } from "../../../application/useCases/user/CreateUser.usecase";
-import { DeactivateUserByUsernameUsecase } from "../../../application/useCases/user/DeactivateUserByUsername.usecase";
-import { GetUserByUsernameOrEmailUseCase } from "../../../application/useCases/user/GetUserByUsernameOrEmail";
+import { CreateUserDTO } from "../../../application/dtos/user/create-user.dto";
+import { UserResponseDTO } from "../../../application/dtos/user/user-response.dto";
+import { CreateUserUseCase } from "../../../application/useCases/user/create-user.usecase";
+import { DeactivateUserByUsernameUsecase } from "../../../application/useCases/user/deactivate-user-by-username.usecase";
+import { GetUserByUsernameOrEmailUseCase } from "../../../application/useCases/user/get-user-by-username-or-email";
 
 export class UserController {
   private constructor(
@@ -22,43 +22,27 @@ export class UserController {
     );
   }
 
-  async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, username, firstName, lastName, password, role } = req.body;
+      const dto: CreateUserDTO = req.body;
 
-      const hashedPassword = await hash(password, 10);
-
-      const dto = new CreateUserDTO(
-        email,
-        username,
-        firstName,
-        lastName,
-        hashedPassword,
-        role
-      );
       const errors = await validate(dto);
 
       if (errors.length > 0) {
         res.status(400).json({
-          status: "error",
           message: "Validation failed",
           clientMessage: "Erro de validação",
-          errors: errors.map((e) => e.constraints),
+          errors: errors,
         });
         return;
       }
 
+      const hashedPassword = await hash(dto.password, 10);
+      dto.password = hashedPassword;
+
       const newUser = await this.createUserUseCase.execute(dto);
 
-      const userResponse = new UserResponseDTO(
-        newUser.id!,
-        newUser.email,
-        newUser.username,
-        newUser.firstName,
-        newUser.lastName,
-        newUser.createdAt,
-        newUser.role
-      );
+      const userResponse = UserResponseDTO.toDTO(newUser);
 
       res.status(201).json(userResponse);
     } catch (error) {
@@ -66,11 +50,7 @@ export class UserController {
     }
   }
 
-  async getUserByUsername(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getUserByUsername(req: Request, res: Response, next: NextFunction) {
     try {
       const username = req.params.username;
 
@@ -92,15 +72,7 @@ export class UserController {
         return;
       }
 
-      const userResponse = new UserResponseDTO(
-        user.id!,
-        user.email,
-        user.username,
-        user.firstName,
-        user.lastName,
-        user.createdAt,
-        user.role
-      );
+      const userResponse = UserResponseDTO.toDTO(user);
 
       res.status(200).json(userResponse);
     } catch (error) {
@@ -112,7 +84,7 @@ export class UserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
+  ) {
     try {
       const username = req.params.username;
 
@@ -126,7 +98,10 @@ export class UserController {
 
       await this.deactivateUserByUsernameUsecase.execute(username);
 
-      res.status(200).json({ message: "User deactivated successfully" });
+      res.status(200).json({
+        message: "User deactivated successfully",
+        clientMessage: "Usuário desativado com sucesso",
+      });
     } catch (error) {
       next(error);
     }

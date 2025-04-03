@@ -1,6 +1,6 @@
-import { PrismaClient, User as PrismaUser, Role } from "@prisma/client";
-import { IUserRepository } from "../../../infrastructure/repositories/user/IUserRepository.interface";
-import { User } from "../../entities/user/User.entity";
+import { PrismaClient, user as PrismaUser, Role } from "@prisma/client";
+import { IUserRepository } from "../../../infrastructure/repositories/user/user-repository.interface";
+import { User } from "../../entities/user/user.entity";
 
 const prisma = new PrismaClient();
 
@@ -87,5 +87,16 @@ export class UserRepository implements IUserRepository {
       where: { username },
       data: { active: false },
     });
+  }
+
+  async update(user: User): Promise<User> {
+    const userObject = this.toPrismaEntity(user);
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userObject.id },
+      data: userObject,
+    });
+
+    return this.toDomainEntity(updatedUser);
   }
 }

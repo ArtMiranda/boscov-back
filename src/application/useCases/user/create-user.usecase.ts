@@ -1,8 +1,8 @@
-import { User } from "../../../domain/entities/user/User.entity";
-import { UserAlreadyExistsError } from "../../../domain/errors/user/User.errors";
-import { UserRepository } from "../../../domain/repositories/user/User.repository";
-import { IUserRepository } from "../../../infrastructure/repositories/user/IUserRepository.interface";
-import { CreateUserDTO } from "../../dtos/user/CreateUser.dto";
+import { User } from "../../../domain/entities/user/user.entity";
+import { UserAlreadyExistsError } from "../../../domain/errors/user/user.errors";
+import { UserRepository } from "../../../domain/repositories/user/user.repository";
+import { IUserRepository } from "../../../infrastructure/repositories/user/user-repository.interface";
+import { CreateUserDTO } from "../../dtos/user/create-user.dto";
 
 export class CreateUserUseCase {
   private constructor(private readonly userRepository: IUserRepository) {}
@@ -17,8 +17,9 @@ export class CreateUserUseCase {
     if (userExistsByEmail) {
       throw new UserAlreadyExistsError();
     }
-    const userExistsByUsername =
-      await this.userRepository.findByUsernameOrEmail(dto.username);
+    const userExistsByUsername = await this.userRepository.findByUsername(
+      dto.username
+    );
 
     if (userExistsByUsername) {
       throw new UserAlreadyExistsError();

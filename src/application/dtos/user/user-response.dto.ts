@@ -1,4 +1,5 @@
 import { Role } from "@prisma/client";
+import { User } from "../../../domain/entities/user/user.entity";
 
 export class UserResponseDTO {
   id: string;
@@ -25,5 +26,17 @@ export class UserResponseDTO {
     this.lastName = lastName;
     this.createdAt = createdAt;
     this.role = role;
+  }
+
+  static toDTO(user: User): UserResponseDTO {
+    return new UserResponseDTO(
+      user.id!,
+      user.email,
+      user.username,
+      user.firstName,
+      user.lastName,
+      user.createdAt,
+      user.role
+    );
   }
 }
