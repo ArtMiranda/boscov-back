@@ -7,4 +7,5 @@ export interface IUserRepository {
   findByUsername(username: string): Promise<User | null>;
   deactivateUserByUsername(username: string): Promise<void>;
   update(user: User): Promise<User>;
+  existsById(id: string): Promise<boolean>;
 }
