@@ -1,7 +1,9 @@
 import express from "express";
+import "reflect-metadata";
 import { setupSwagger } from "./config/swagger";
 import errorMiddleware from "./infrastructure/http/error.middleware";
 import authRoutes from "./presentation/routes/auth/auth.routes";
+import movieGenreRoutes from "./presentation/routes/movie-genre/movie-genre.routes";
 import userRoutes from "./presentation/routes/user/user.routes";
 const cors = require("cors");
 
@@ -19,6 +21,7 @@ app.use(
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/genre", movieGenreRoutes);
 
 setupSwagger(app);
 

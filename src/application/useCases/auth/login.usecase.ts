@@ -30,9 +30,13 @@ export class LoginUseCase {
       throw new InvalidCredentialsError();
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: user.id, sub: user.email },
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     return token;
   }

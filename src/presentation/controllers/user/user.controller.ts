@@ -1,4 +1,5 @@
 import { hash } from "bcrypt";
+import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { NextFunction, Request, Response } from "express";
 import { CreateUserDTO } from "../../../application/dtos/user/create-user.dto";
@@ -24,7 +25,7 @@ export class UserController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const dto: CreateUserDTO = req.body;
+      const dto = plainToInstance(CreateUserDTO, req.body as CreateUserDTO);
 
       const errors = await validate(dto);
 

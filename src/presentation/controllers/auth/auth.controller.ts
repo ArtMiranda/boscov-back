@@ -1,3 +1,4 @@
+import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { NextFunction, Request, Response } from "express";
 import { ChangePasswordDTO } from "../../../application/dtos/auth/change-password.dto";
@@ -20,7 +21,10 @@ export class AuthController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const dto: LoginCredentialsDTO = req.body;
+      const dto = plainToInstance(
+        LoginCredentialsDTO,
+        req.body as LoginCredentialsDTO
+      );
 
       const errors = await validate(dto);
 
@@ -44,9 +48,10 @@ export class AuthController {
 
   async changePassword(req: Request, res: Response, next: NextFunction) {
     try {
-      const dto: ChangePasswordDTO = req.body;
-
-      await this.changePasswordUseCase.execute(dto);
+      const dto = plainToInstance(
+        ChangePasswordDTO,
+        req.body as ChangePasswordDTO
+      );
 
       const errors = await validate(dto);
 
@@ -58,6 +63,8 @@ export class AuthController {
         });
         return;
       }
+
+      await this.changePasswordUseCase.execute(dto);
 
       res.status(200).json({
         message: "Password changed successfully",
