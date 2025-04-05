@@ -6,7 +6,7 @@ import { IUserRepository } from "../../../infrastructure/repositories/user/user-
 import { CreateReviewDTO } from "../../dtos/review/in/create-review.dto";
 
 export class CreateReviewUseCase {
-  constructor(
+  private constructor(
     private readonly reviewRepository: IReviewRepository,
     private userRepository: IUserRepository
   ) {}

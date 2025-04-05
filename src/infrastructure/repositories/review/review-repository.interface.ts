@@ -5,4 +5,7 @@ import { Review } from "../../../domain/entities/review/review.entity";
 export interface IReviewRepository {
   createReview(dto: CreateReviewDTO): Promise<Review>;
   updateReview(id: string, dto: UpdateReviewDTO): Promise<Review>;
+  deactivateReview(id: string): Promise<Review>;
+  existsById(id: string): Promise<boolean>;
+  getReviewsByMovieId(movieId: string): Promise<Review[]>;
 }

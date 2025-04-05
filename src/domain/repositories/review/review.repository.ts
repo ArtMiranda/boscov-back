@@ -69,4 +69,31 @@ export class ReviewRepository implements IReviewRepository {
 
     return this.toEntity(review);
   }
+
+  async deactivateReview(id: string): Promise<Review> {
+    const review = await prisma.review.update({
+      where: { id: id },
+      data: {
+        active: false,
+      },
+    });
+
+    return this.toEntity(review);
+  }
+
+  async existsById(id: string): Promise<boolean> {
+    const review = await prisma.review.findUnique({
+      where: { id: id },
+    });
+
+    return review !== null;
+  }
+
+  async getReviewsByMovieId(movieId: string): Promise<Review[]> {
+    const reviews = await prisma.review.findMany({
+      where: { movieId: movieId },
+    });
+
+    return reviews.map((review) => this.toEntity(review));
+  }
 }

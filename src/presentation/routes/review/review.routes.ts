@@ -18,4 +18,16 @@ router.put(
   reviewController.update.bind(reviewController)
 );
 
+router.get(
+  "/movie/:movieId",
+  authenticateJWT,
+  reviewController.getReviewsByMovieId.bind(reviewController)
+);
+
+router.post(
+  "/deactivate/:id",
+  authenticateJWT,
+  reviewController.deactivateById.bind(reviewController)
+);
+
 export default router;
