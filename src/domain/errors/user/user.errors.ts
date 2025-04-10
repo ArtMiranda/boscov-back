@@ -14,7 +14,7 @@ export class InvalidPasswordError extends AppError {
 
 export class UserNotFoundError extends AppError {
   constructor(message: string) {
-    super(message, 404);
+    super(message, StatusCodes.NOT_FOUND);
   }
 }
 
@@ -26,6 +26,6 @@ export class UserAlreadyDeactivatedError extends AppError {
 
 export class UserNotActiveError extends AppError {
   constructor() {
-    super("User is not active", 403);
+    super("User is not active", StatusCodes.FORBIDDEN);
   }
 }

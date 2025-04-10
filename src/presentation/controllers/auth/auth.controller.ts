@@ -1,9 +1,10 @@
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import { ChangePasswordDTO } from "../../../application/dtos/auth/change-password.dto";
 import { LoginCredentialsDTO } from "../../../application/dtos/auth/login-credentials.dto";
-import { ChangePasswordUseCase } from "../../../application/useCases/auth/change-password-usecase";
+import { ChangePasswordUseCase } from "../../../application/useCases/auth/change-password.usecase";
 import { LoginUseCase } from "../../../application/useCases/auth/login.usecase";
 
 export class AuthController {
@@ -36,11 +37,9 @@ export class AuthController {
         });
         return;
       }
-      const token = await this.loginUseCase.execute(dto.username, dto.password);
+      const response = await this.loginUseCase.execute(dto.username, dto.password);
 
-      res.status(200).json({
-        token: token,
-      });
+      res.status(StatusCodes.OK).json(response);
     } catch (error) {
       next(error);
     }
@@ -66,7 +65,7 @@ export class AuthController {
 
       await this.changePasswordUseCase.execute(dto);
 
-      res.status(200).json({
+      res.status(StatusCodes.OK).json({
         message: "Password changed successfully",
         clientMessage: "Senha alterada com sucesso",
       });

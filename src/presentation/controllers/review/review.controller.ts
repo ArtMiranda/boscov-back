@@ -1,6 +1,7 @@
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import { CreateReviewDTO } from "../../../application/dtos/review/in/create-review.dto";
 import { UpdateReviewDTO } from "../../../application/dtos/review/in/update-review.dto";
 import { ReviewOutputDTO } from "../../../application/dtos/review/out/review-output.dto";
@@ -41,7 +42,7 @@ export class ReviewController {
 
       const newReview = await this.createReviewUseCase.execute(dto);
 
-      res.status(201).json({
+      res.status(StatusCodes.CREATED).json({
         message: "Review created successfully",
         clientMessage: "Avaliação criada com sucesso",
         data: ReviewOutputDTO.toResponse(newReview),
@@ -78,7 +79,7 @@ export class ReviewController {
         dto
       );
 
-      res.status(200).json({
+      res.status(StatusCodes.OK).json({
         message: "Review updated successfully",
         clientMessage: "Avaliação atualizada com sucesso",
         data: ReviewOutputDTO.toResponse(updatedReview),
@@ -99,7 +100,7 @@ export class ReviewController {
         return;
       }
       const review = await this.deactivateReviewUseCase.execute(reviewId);
-      res.status(200).json({
+      res.status(StatusCodes.OK).json({
         message: "Review deactivated successfully",
         clientMessage: "Avaliação desativada com sucesso",
         data: ReviewOutputDTO.toResponse(review),
@@ -121,7 +122,7 @@ export class ReviewController {
       }
       const reviews = await this.getReviewsByMovieIdUseCase.execute(movieId);
       res
-        .status(200)
+        .status(StatusCodes.OK)
         .json(reviews.map((review) => ReviewOutputDTO.toResponse(review)));
     } catch (error) {
       next(error);

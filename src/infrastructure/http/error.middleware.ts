@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import { AppError } from "../../domain/errors/app.error";
 
 function errorMiddleware(
@@ -11,7 +12,7 @@ function errorMiddleware(
   if (err) {
     res.status(err.statusCode).json({ error: err.message });
   } else {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
   }
 }
 

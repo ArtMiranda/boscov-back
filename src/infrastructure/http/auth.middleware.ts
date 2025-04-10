@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 
 export function authenticateJWT(
@@ -10,7 +11,7 @@ export function authenticateJWT(
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({ message: "Token not provided or invalid format" });
+    res.status(StatusCodes.UNAUTHORIZED).json({ message: "Token not provided or invalid format" });
     return;
   }
 
@@ -20,6 +21,6 @@ export function authenticateJWT(
     jwt.verify(token, JWT_SECRET);
     next();
   } catch (err) {
-    res.status(401).json({ message: "Invalid token" });
+    res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid token" });
   }
 }

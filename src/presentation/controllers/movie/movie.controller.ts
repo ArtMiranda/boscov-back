@@ -1,17 +1,21 @@
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import { GetMovieDetailsByIdUseCase } from "../../../application/useCases/movie/get-movie-details-by-id.usecase";
 import { GetNowPlayingMoviesUseCase } from "../../../application/useCases/movie/get-now-playing-movies.usecase";
+import { SearchMoviesByNameUseCase } from "../../../application/useCases/movie/search-movies-by-name.usecase";
 
 export class MovieController {
   constructor(
     private readonly getNowPlayingMoviesUseCase: GetNowPlayingMoviesUseCase,
-    private readonly getMovieDetailsByIdUseCase: GetMovieDetailsByIdUseCase
+    private readonly getMovieDetailsByIdUseCase: GetMovieDetailsByIdUseCase,
+    private readonly searchMoviesByNameUseCase: SearchMoviesByNameUseCase
   ) {}
 
   static makeController() {
     return new MovieController(
       GetNowPlayingMoviesUseCase.makeUseCase(),
-      GetMovieDetailsByIdUseCase.makeUseCase()
+      GetMovieDetailsByIdUseCase.makeUseCase(),
+      SearchMoviesByNameUseCase.makeUseCase()
     );
   }
 
@@ -29,7 +33,7 @@ export class MovieController {
 
       const movies = await this.getNowPlayingMoviesUseCase.execute(page);
 
-      res.status(200).json(movies);
+      res.status(StatusCodes.OK).json(movies);
     } catch (error) {
       next(error);
     }
@@ -49,7 +53,27 @@ export class MovieController {
 
       const data = await this.getMovieDetailsByIdUseCase.execute(movieId);
 
-      res.status(200).json(data);
+      res.status(StatusCodes.OK).json(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async searchMoviesByName(req: Request, res: Response, next: NextFunction) {
+    try {
+      const query = req.params.movieName;
+
+      if (!query) {
+        res.status(400).json({
+          message: "Movie name is required",
+          clientMessage: "Nome do filme é obrigatório",
+        });
+        return;
+      }
+
+      const data = await this.searchMoviesByNameUseCase.execute(query);
+
+      res.status(StatusCodes.OK).json(data);
     } catch (error) {
       next(error);
     }

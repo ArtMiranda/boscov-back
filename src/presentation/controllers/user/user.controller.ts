@@ -2,11 +2,12 @@ import { hash } from "bcrypt";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import { CreateUserDTO } from "../../../application/dtos/user/create-user.dto";
 import { UserResponseDTO } from "../../../application/dtos/user/user-response.dto";
 import { CreateUserUseCase } from "../../../application/useCases/user/create-user.usecase";
 import { DeactivateUserByUsernameUsecase } from "../../../application/useCases/user/deactivate-user-by-username.usecase";
-import { GetUserByUsernameOrEmailUseCase } from "../../../application/useCases/user/get-user-by-username-or-email";
+import { GetUserByUsernameOrEmailUseCase } from "../../../application/useCases/user/get-user-by-username-or-email.usecase";
 
 export class UserController {
   private constructor(
@@ -26,7 +27,7 @@ export class UserController {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const dto = plainToInstance(CreateUserDTO, req.body as CreateUserDTO);
-
+      console.log("dto: ", dto);
       const errors = await validate(dto);
 
       if (errors.length > 0) {
@@ -45,7 +46,7 @@ export class UserController {
 
       const userResponse = UserResponseDTO.toDTO(newUser);
 
-      res.status(201).json(userResponse);
+      res.status(StatusCodes.CREATED).json(userResponse);
     } catch (error) {
       next(error);
     }
@@ -66,7 +67,7 @@ export class UserController {
       const user = await this.getUserByUsernameOrEmailUseCase.execute(username);
 
       if (!user) {
-        res.status(404).json({
+        res.status(StatusCodes.NOT_FOUND).json({
           message: "User not found",
           clientMessage: "Usuário não encontrado",
         });
@@ -75,7 +76,7 @@ export class UserController {
 
       const userResponse = UserResponseDTO.toDTO(user);
 
-      res.status(200).json(userResponse);
+      res.status(StatusCodes.OK).json(userResponse);
     } catch (error) {
       next(error);
     }
@@ -99,7 +100,7 @@ export class UserController {
 
       await this.deactivateUserByUsernameUsecase.execute(username);
 
-      res.status(200).json({
+      res.status(StatusCodes.OK).json({
         message: "User deactivated successfully",
         clientMessage: "Usuário desativado com sucesso",
       });

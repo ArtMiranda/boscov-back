@@ -17,4 +17,10 @@ router.get(
   movieController.getMovieDetailsById.bind(movieController)
 );
 
+router.get(
+  "/name/:movieName",
+  authenticateJWT,
+  movieController.searchMoviesByName.bind(movieController)
+);
+
 export default router;

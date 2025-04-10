@@ -2,7 +2,7 @@ import { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { InvalidCredentialsError } from "../../../domain/errors/auth/auth.errors";
 import { UserNotActiveError } from "../../../domain/errors/user/user.errors";
-import { GetUserByUsernameOrEmailUseCase } from "../user/get-user-by-username-or-email";
+import { GetUserByUsernameOrEmailUseCase } from "../user/get-user-by-username-or-email.usecase";
 
 export class LoginUseCase {
   private constructor(
@@ -13,7 +13,7 @@ export class LoginUseCase {
     return new LoginUseCase(GetUserByUsernameOrEmailUseCase.makeUseCase());
   }
 
-  async execute(username: string, password: string): Promise<string> {
+  async execute(username: string, password: string) {
     const user = await this.getUserByUsernameOrEmailUseCase.execute(username);
 
     if (user?.active === false) {
@@ -38,6 +38,14 @@ export class LoginUseCase {
       }
     );
 
-    return token;
+    return {
+      user: {
+        id: user.id,
+        name: user.firstName,
+        email: user.email,
+        username: user.username,
+      },
+      token,
+    };
   }
 }
