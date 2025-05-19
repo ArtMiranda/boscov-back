@@ -33,7 +33,7 @@ export class ReviewController {
 
       const errors = await validate(dto);
       if (errors.length > 0) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Validation failed",
           errors: errors,
         });
@@ -58,7 +58,7 @@ export class ReviewController {
       const reviewId = req.params.id;
 
       if (!reviewId) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Review ID is required",
           clientMessage: "ID da avaliação é obrigatório",
         });
@@ -67,7 +67,7 @@ export class ReviewController {
 
       const errors = await validate(dto);
       if (errors.length > 0) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Validation failed",
           errors: errors,
         });
@@ -93,7 +93,7 @@ export class ReviewController {
     try {
       const reviewId = req.params.id;
       if (!reviewId) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Review ID is required",
           clientMessage: "ID da avaliação é obrigatório",
         });
@@ -114,7 +114,7 @@ export class ReviewController {
     try {
       const movieId = req.params.movieId;
       if (!movieId) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Movie ID is required",
           clientMessage: "ID do filme é obrigatório",
         });

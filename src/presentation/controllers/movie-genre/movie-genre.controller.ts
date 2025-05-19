@@ -26,7 +26,7 @@ export class MovieGenreController {
       const { name } = req.body;
 
       if (!name) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Name is required",
           clientMessage: "Nome é obrigatório",
         });
@@ -60,7 +60,7 @@ export class MovieGenreController {
       const id = parseInt(req.params.id);
 
       if (!id) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "ID is required",
           clientMessage: "ID do gênero é obrigatório",
         });
@@ -85,7 +85,7 @@ export class MovieGenreController {
       const name = req.body.name;
 
       if (!id) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "ID is required",
           clientMessage: "ID do gênero é obrigatório",
         });
@@ -93,7 +93,7 @@ export class MovieGenreController {
       }
 
       if (!name) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Name is required",
           clientMessage: "Nome do gênero é obrigatório",
         });

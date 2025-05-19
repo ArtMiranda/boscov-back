@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import { AppError } from "../app.error";
 
 export class UserAlreadyExistsError extends AppError {
@@ -8,7 +9,7 @@ export class UserAlreadyExistsError extends AppError {
 
 export class InvalidPasswordError extends AppError {
   constructor() {
-    super("Password must have at least 8 characters", 400);
+    super("Password must have at least 8 characters", StatusCodes.BAD_REQUEST);
   }
 }
 
@@ -20,7 +21,7 @@ export class UserNotFoundError extends AppError {
 
 export class UserAlreadyDeactivatedError extends AppError {
   constructor() {
-    super("User already deactivated", 400);
+    super("User already deactivated", StatusCodes.BAD_REQUEST);
   }
 }
 

@@ -27,11 +27,10 @@ export class UserController {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const dto = plainToInstance(CreateUserDTO, req.body as CreateUserDTO);
-      console.log("dto: ", dto);
       const errors = await validate(dto);
 
       if (errors.length > 0) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Validation failed",
           clientMessage: "Erro de validação",
           errors: errors,
@@ -57,7 +56,7 @@ export class UserController {
       const username = req.params.username;
 
       if (!username) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Username is required",
           clientMessage: "Nome de usuário é obrigatório",
         });
@@ -91,7 +90,7 @@ export class UserController {
       const username = req.params.username;
 
       if (!username) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Username is required",
           clientMessage: "Nome de usuário é obrigatório",
         });

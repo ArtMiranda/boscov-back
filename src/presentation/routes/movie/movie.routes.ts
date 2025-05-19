@@ -12,6 +12,12 @@ router.get(
 );
 
 router.get(
+  "/popular",
+  authenticateJWT,
+  movieController.getPopularMovies.bind(movieController)
+);
+
+router.get(
   "/:movieId",
   authenticateJWT,
   movieController.getMovieDetailsById.bind(movieController)

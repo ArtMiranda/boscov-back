@@ -30,7 +30,7 @@ export class AuthController {
       const errors = await validate(dto);
 
       if (errors.length > 0) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Validation failed",
           clientMessage: "Erro de validação",
           errors: errors,
@@ -55,7 +55,7 @@ export class AuthController {
       const errors = await validate(dto);
 
       if (errors.length > 0) {
-        res.status(400).json({
+        res.status(StatusCodes.BAD_REQUEST).json({
           message: "Validation failed",
           clientMessage: "Erro de validação",
           errors: errors,
