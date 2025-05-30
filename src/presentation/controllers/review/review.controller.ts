@@ -120,7 +120,8 @@ export class ReviewController {
         });
         return;
       }
-      const reviews = await this.getReviewsByMovieIdUseCase.execute(movieId);
+      const movieIdNumber = Number(movieId);
+      const reviews = await this.getReviewsByMovieIdUseCase.execute(movieIdNumber);
       res
         .status(StatusCodes.OK)
         .json(reviews.map((review) => ReviewOutputDTO.toResponse(review)));

@@ -1,23 +1,24 @@
+import { User } from "../user/user.entity";
 
 export class Review {
   id: string;
-  movieId: string;
+  movieId: number;
   title: string;
   body: string;
   rating: number;
   active: boolean;
-  authorId: string;
+  author: User;
   createdAt: Date;
   updatedAt: Date;
 
   constructor(
     id: string,
-    movieId: string,
+    movieId: number,
     title: string,
     body: string,
     rating: number,
     active: boolean,
-    authorId: string,
+    author: User,
     createdAt: Date,
     updatedAt: Date
   ) {
@@ -27,7 +28,7 @@ export class Review {
     this.body = body;
     this.rating = rating;
     this.active = active;
-    this.authorId = authorId;
+    this.author = author;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }

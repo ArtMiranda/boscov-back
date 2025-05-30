@@ -34,7 +34,7 @@ model user {
 
 model review {
   id        String   @id @unique @default(uuid()) @db.Char(36)
-  movieId   String
+  movieId   Int
   title     String
   body      String
   rating    Int

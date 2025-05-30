@@ -1,24 +1,25 @@
 import { Review } from "../../../../domain/entities/review/review.entity";
+import { User } from "../../../../domain/entities/user/user.entity";
 
 export class ReviewOutputDTO {
   id: string;
-  movieId: string;
+  movieId: number;
   title: string;
   body: string;
   rating: number;
   active: boolean;
-  authorId: string;
+  author: User;
   createdAt: Date;
   updatedAt: Date;
 
   constructor(
     id: string,
-    movieId: string,
+    movieId: number,
     title: string,
     body: string,
     rating: number,
     active: boolean,
-    authorId: string,
+    author: User,
     createdAt: Date,
     updatedAt: Date
   ) {
@@ -28,7 +29,7 @@ export class ReviewOutputDTO {
     this.body = body;
     this.rating = rating;
     this.active = active;
-    this.authorId = authorId;
+    this.author = author;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -41,7 +42,7 @@ export class ReviewOutputDTO {
       review.body,
       review.rating,
       review.active,
-      review.authorId,
+      review.author,
       review.createdAt,
       review.updatedAt
     );

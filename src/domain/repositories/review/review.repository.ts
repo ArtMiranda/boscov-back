@@ -1,9 +1,25 @@
-import { PrismaClient, review as PrismaReview } from "@prisma/client";
+import { PrismaClient, review as PrismaReview, Role } from "@prisma/client";
 import { CreateReviewDTO } from "../../../application/dtos/review/in/create-review.dto";
 import { IReviewRepository } from "../../../infrastructure/repositories/review/review-repository.interface";
 import { Review } from "../../entities/review/review.entity";
+import { User } from "../../entities/user/user.entity";
 
 const prisma = new PrismaClient();
+
+type PrismaReviewWithAuthor = PrismaReview & {
+  author: {
+    id: string;
+    email: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    password: string;
+    createdAt: Date;
+    updatedAt: Date;
+    active: boolean;
+    role: string; 
+  };
+};
 
 export class ReviewRepository implements IReviewRepository {
   private constructor() {}
@@ -15,7 +31,20 @@ export class ReviewRepository implements IReviewRepository {
     return ReviewRepository.instance;
   }
 
-  toEntity(prismaReview: PrismaReview): Review {
+  toEntity(prismaReview: PrismaReviewWithAuthor): Review {
+    const authorEntity = new User({
+      id: prismaReview.author.id,
+      email: prismaReview.author.email,
+      username: prismaReview.author.username,
+      firstName: prismaReview.author.firstName,
+      lastName: prismaReview.author.lastName,
+      password: prismaReview.author.password,
+      createdAt: prismaReview.author.createdAt,
+      updatedAt: prismaReview.author.updatedAt,
+      active: prismaReview.author.active,
+      role: prismaReview.author.role as Role,
+    });
+
     return new Review(
       prismaReview.id,
       prismaReview.movieId,
@@ -23,9 +52,9 @@ export class ReviewRepository implements IReviewRepository {
       prismaReview.body,
       prismaReview.rating,
       prismaReview.active,
-      prismaReview.authorId,
+      authorEntity,
       prismaReview.createdAt,
-      prismaReview.updatedAt
+      prismaReview.updatedAt,
     );
   }
 
@@ -37,7 +66,7 @@ export class ReviewRepository implements IReviewRepository {
       body: review.body,
       rating: review.rating,
       active: review.active,
-      authorId: review.authorId,
+      authorId: review.author.id!,
       createdAt: review.createdAt,
       updatedAt: review.updatedAt,
     };
@@ -54,16 +83,22 @@ export class ReviewRepository implements IReviewRepository {
       },
     });
 
-    return this.toEntity(review);
+    return this.toEntity({
+      ...review,
+      author: await prisma.user.findUniqueOrThrow({ where: { id: dto.authorId } }),
+    });
   }
 
   async updateReview(id: string, dto: CreateReviewDTO): Promise<Review> {
     const review = await prisma.review.update({
-      where: { id: id },
+      where: { id },
       data: {
         title: dto.title,
         body: dto.body,
         rating: dto.rating,
+      },
+      include: {
+        author: true,
       },
     });
 
@@ -72,9 +107,12 @@ export class ReviewRepository implements IReviewRepository {
 
   async deactivateReview(id: string): Promise<Review> {
     const review = await prisma.review.update({
-      where: { id: id },
+      where: { id },
       data: {
         active: false,
+      },
+      include: {
+        author: true,
       },
     });
 
@@ -83,15 +121,18 @@ export class ReviewRepository implements IReviewRepository {
 
   async existsById(id: string): Promise<boolean> {
     const review = await prisma.review.findUnique({
-      where: { id: id },
+      where: { id },
     });
 
     return review !== null;
   }
 
-  async getReviewsByMovieId(movieId: string): Promise<Review[]> {
+  async getReviewsByMovieId(movieId: number): Promise<Review[]> {
     const reviews = await prisma.review.findMany({
-      where: { movieId: movieId },
+      where: { movieId },
+      include: {
+        author: true,
+      },
     });
 
     return reviews.map((review) => this.toEntity(review));

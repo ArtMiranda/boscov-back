@@ -1,16 +1,15 @@
 import {
-    IsNotEmpty,
-    IsNumber,
-    IsString,
-    IsUUID,
-    Max,
-    Min,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUUID,
+  Max,
+  Min,
 } from "class-validator";
 
 export class CreateReviewDTO {
-  @IsUUID()
-  @IsNotEmpty()
-  movieId: string;
+  @IsNumber()
+  movieId: number;
 
   @IsString()
   @IsNotEmpty()
@@ -31,7 +30,7 @@ export class CreateReviewDTO {
   authorId: string;
 
   constructor(
-    movieId: string,
+    movieId: number,
     title: string,
     body: string,
     rating: number,

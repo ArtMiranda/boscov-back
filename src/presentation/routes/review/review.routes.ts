@@ -7,13 +7,13 @@ const router = express.Router();
 const reviewController = ReviewController.makeController();
 
 router.post(
-  "/create",
+  "/",
   authenticateJWT,
   reviewController.create.bind(reviewController)
 );
 
 router.put(
-  "/update/:id",
+  "/:id",
   authenticateJWT,
   reviewController.update.bind(reviewController)
 );
@@ -24,8 +24,8 @@ router.get(
   reviewController.getReviewsByMovieId.bind(reviewController)
 );
 
-router.post(
-  "/deactivate/:id",
+router.delete(
+  "/:id",
   authenticateJWT,
   reviewController.deactivateById.bind(reviewController)
 );

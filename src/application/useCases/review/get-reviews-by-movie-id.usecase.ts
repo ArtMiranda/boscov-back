@@ -8,7 +8,7 @@ export class GetReviewsByMovieIdUseCase {
     return new GetReviewsByMovieIdUseCase(ReviewRepository.getInstance());
   }
 
-  async execute(movieId: string) {
+  async execute(movieId: number) {
     const reviews = await this.reviewRepository.getReviewsByMovieId(movieId);
     return reviews;
   }

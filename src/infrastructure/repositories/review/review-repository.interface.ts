@@ -7,5 +7,5 @@ export interface IReviewRepository {
   updateReview(id: string, dto: UpdateReviewDTO): Promise<Review>;
   deactivateReview(id: string): Promise<Review>;
   existsById(id: string): Promise<boolean>;
-  getReviewsByMovieId(movieId: string): Promise<Review[]>;
+  getReviewsByMovieId(movieId: number): Promise<Review[]>;
 }
