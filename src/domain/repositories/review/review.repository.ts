@@ -17,7 +17,7 @@ type PrismaReviewWithAuthor = PrismaReview & {
     createdAt: Date;
     updatedAt: Date;
     active: boolean;
-    role: string; 
+    role: string;
   };
 };
 
@@ -54,7 +54,7 @@ export class ReviewRepository implements IReviewRepository {
       prismaReview.active,
       authorEntity,
       prismaReview.createdAt,
-      prismaReview.updatedAt,
+      prismaReview.updatedAt
     );
   }
 
@@ -85,7 +85,9 @@ export class ReviewRepository implements IReviewRepository {
 
     return this.toEntity({
       ...review,
-      author: await prisma.user.findUniqueOrThrow({ where: { id: dto.authorId } }),
+      author: await prisma.user.findUniqueOrThrow({
+        where: { id: dto.authorId },
+      }),
     });
   }
 
@@ -129,7 +131,7 @@ export class ReviewRepository implements IReviewRepository {
 
   async getReviewsByMovieId(movieId: number): Promise<Review[]> {
     const reviews = await prisma.review.findMany({
-      where: { movieId },
+      where: { movieId, active: true },
       include: {
         author: true,
       },

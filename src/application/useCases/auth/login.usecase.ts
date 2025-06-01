@@ -44,6 +44,7 @@ export class LoginUseCase {
         name: user.firstName,
         email: user.email,
         username: user.username,
+        role: user.role,
       },
       token,
     };
