@@ -63,7 +63,7 @@ export class MovieController {
 
   async searchMoviesByName(req: Request, res: Response, next: NextFunction) {
     try {
-      const query = req.params.movieName;
+      const query = req.query.name as string;
 
       if (!query) {
         res.status(StatusCodes.BAD_REQUEST).json({

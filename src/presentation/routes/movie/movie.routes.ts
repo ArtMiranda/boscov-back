@@ -24,7 +24,7 @@ router.get(
 );
 
 router.get(
-  "/name/:movieName",
+  "/search/name",
   authenticateJWT,
   movieController.searchMoviesByName.bind(movieController)
 );

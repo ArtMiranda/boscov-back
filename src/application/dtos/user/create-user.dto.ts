@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsOptional,
+  Matches,
   MinLength,
 } from "class-validator";
 
@@ -28,8 +29,10 @@ export class CreateUserDTO {
   @MinLength(3, { message: "Sobrenome deve ter pelo menos 3 caracteres" })
   lastName: string;
 
-  @MinLength(6, {
-    message: "Senha deve ter pelo menos 6 caracteres",
+  @MinLength(8, { message: "A senha deve ter no mínimo 8 caracteres." })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/, {
+    message:
+      "A senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.",
   })
   password: string;
 
